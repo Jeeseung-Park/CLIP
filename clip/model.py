@@ -167,20 +167,6 @@ class QuickGELU(nn.Module):
         return x * torch.sigmoid(1.702 * x)
 
 
-linear = _add_docstr(
-    torch._C._nn.linear,
-    r"""
-linear(input, weight, bias=None) -> Tensor
-Applies a linear transformation to the incoming data: :math:`y = xA^T + b`.
-This operator supports :ref:`TensorFloat32<tf32_on_ampere>`.
-Shape:
-    - Input: :math:`(*, in\_features)` where `*` means any number of
-      additional dimensions, including none
-    - Weight: :math:`(out\_features, in\_features)` or :math:`(in\_features)`
-    - Bias: :math:`(out\_features)` or :math:`()`
-    - Output: :math:`(*, out\_features)` or :math:`(*)`, based on the shape of the weight
-""")
-
 class ResidualAttentionBlock(nn.Module):
     def __init__(self, d_model: int, n_head: int, step: int, attn_mask: torch.Tensor = None):
         super().__init__()
