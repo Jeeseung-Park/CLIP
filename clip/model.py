@@ -181,6 +181,7 @@ class ResidualAttentionBlock(nn.Module):
         self.ln_2 = LayerNorm(d_model)
         self.attn_mask = attn_mask
         self.step = step
+        self.linear = torch._C._nn.linear
 
     def attention(self, x: torch.Tensor, detection_attn_mask=None, box_coords=None):
         self.attn_mask = self.attn_mask.to(dtype=x.dtype, device=x.device) if self.attn_mask is not None else None
@@ -306,11 +307,11 @@ class ResidualAttentionBlock(nn.Module):
             attn_output = torch.bmm(attn, v)
             
             attn_output = attn_output.transpose(0, 1).contiguous().view(bsz, embed_dim)
-            attn_output = linear(attn_output, out_proj_weight, out_proj_bias)
+            attn_output = self.linear(attn_output, out_proj_weight, out_proj_bias)
             attn_output = attn_output.view(1, bsz, attn_output.size(1))
             
             attn_output_expand = attn_output_expand.transpose(0, 1).contiguous().view(expand_bsz, embed_dim)
-            attn_output_expand = linear(attn_output_expand, out_proj_weight, out_proj_bias)
+            attn_output_expand = self.linear(attn_output_expand, out_proj_weight, out_proj_bias)
             attn_output_expand = attn_output_expand.view(1, expand_bsz, attn_output_expand.size(1))
             
             return attn_output, attn_output_expand
